@@ -1,0 +1,42 @@
+config = {
+    "showOutput" : true, // verbose process output
+    "!timeout": 280, // kill the process after seconds
+    "!batchWait": 6, // wait a few seconds for another change before building 
+    "!interrupt": true, // kill the proccess when there is a new change 
+    "!mvnOpts": "-Xms64m -Xmx256m", // MAVEN_OPTS system environment passed to process otherwise inherited
+    "!mvnArgs": "-Dmaven.surefire.debug -DforkMode=never", // any valid argument to maven
+    "!mvnCmd": "mvnDebug.cmd", //override the mvn command - automatically detects mvn.cmd on Microsoft
+    "locations": [
+    ],
+
+    "watchDirectories": {
+        "includes": [
+            ".*"
+        ],
+        "excludes": [
+            ".*\\.nexus.*", ".*\\.index$", ".*target$", ".*org\\/.*"
+        ]
+    },
+    "activeFiles": {
+        "includes": [
+            ".*pom.xml", ".*.pom$", ".*.java", ".*.xml", ".*.properties"
+        ],
+        "excludes": [
+            ".*pom.properties"
+        ]
+    },
+    "activeArtifacts": {
+        "includes": [
+            ".*:.*"
+        ],
+        "excludes": [
+            "org.*:.*"
+        ]
+    },
+    "buildCommands": {
+        "::": "mvn -DskipTests clean install",
+        "mofokom.*:.*": [
+            "mvn -DskipTests install"
+        ]
+    }
+}

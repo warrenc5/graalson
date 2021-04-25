@@ -1,0 +1,38 @@
+package au.com.devnull.graalson;
+
+import javax.json.JsonString;
+import org.graalvm.polyglot.Value;
+
+/**
+ *
+ * @author wozza
+ */
+public class GraalsonString implements JsonString, GraalsonValue {
+
+    private final Value value;
+
+    public GraalsonString(Value value) {
+        this.value = value;
+    }
+
+    @Override
+    public String getString() {
+        return value.asString();
+    }
+
+    @Override
+    public CharSequence getChars() {
+        return value.asString();
+    }
+
+    @Override
+    public ValueType getValueType() {
+        return ValueType.STRING;
+    }
+
+    @Override
+    public Value getGraalsonValue() {
+        return value;
+    }
+
+}
