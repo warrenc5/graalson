@@ -1,5 +1,6 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.util.Scanner;
@@ -7,9 +8,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonStructure;
-import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.Value;
-import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 
 /**
  *
@@ -23,8 +22,7 @@ public class GraalsonReader implements JsonReader {
 
     public GraalsonReader(Reader reader) {
 
-        Context polyglot = Context.create();
-        this.value = polyglot.eval("js", new Scanner(reader).useDelimiter("\\Z").next());
+        this.value = GraalsonProvider.getPolyglotContext().eval("js", new Scanner(reader).useDelimiter("\\Z").next());
     }
 
     @Override

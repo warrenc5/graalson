@@ -1,6 +1,7 @@
 package au.com.devnull.graalson;
 
 import static au.com.devnull.graalson.GraalsonProvider.getPolyglotContext;
+import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,8 +27,10 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
     Stack<Value> v = new java.util.Stack<>();
 
     Value context = null;
+    private final Writer writer;
 
     public GraalsonGenerator(Writer writer) {
+        this.writer = writer;
     }
 
     @Override
@@ -156,11 +159,15 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public void flush() {
-        System.out.println("flush" + context);
         getPolyglotContext().getBindings("js").putMember("mine", context);
-        getPolyglotContext().eval("js", "result = JSON.stringify(mine)");
+        getPolyglotContext().eval("js", "result = JSON.stringify(mine,2)");
         Value result = getPolyglotContext().getBindings("js").getMember("result");
-        System.out.println("result" + result.asString());
+        try {
+            writer.append(result.toString());
+            writer.flush();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
         v.clear();
     }
 
@@ -173,10 +180,11 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     public static Value valueFor(Class<? extends Object> clazz) {
         if (Map.class.isAssignableFrom(clazz)) {
-            Map<Object, Object> map = getPolyglotContext().eval("js", "{}").as(Map.class);
-            assert ((Map<Object, Object>) getPolyglotContext().eval("js", "[{}]").as(Object.class)).get(0) instanceof Map;
+            //Map<Object, Object> map = getPolyglotContext().eval("js", "{}").as(Map.class);
+            //assert ((Map<Object, Object>) getPolyglotContext().eval("js", "[{}]").as(Object.class)).get(0) instanceof Map;
             //FIXME assert fails, map is null
-            return Value.asValue(map);
+            //return Value.asValue(ProxyObject.fromMap(new HashMap())); //
+            return getPolyglotContext().getBindings("js").getMember("Object").execute();
         } else if (List.class.isAssignableFrom(clazz)) {
             List<Object> list = getPolyglotContext().eval("js", "[]").as(List.class);
             return Value.asValue(list);
@@ -190,14 +198,20 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
     }
 
     private JsonGenerator add(String name, Object value) {
-        //if (v.peek().hasMembers()) {
-        v.peek().putMember(name, value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
-        //}
+        if (v.peek().hasMembers()) {
+            v.peek().putMember(name, value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
+        } else {
+            throw new IllegalArgumentException("current object is not a map " + v.peek());
+        }
         return this;
     }
 
     private JsonGenerator add(Object value) {
-        v.peek().setArrayElement(v.peek().getArraySize(), value.toString());
+        if (v.peek().hasArrayElements()) {
+            v.peek().setArrayElement(v.peek().getArraySize(), value.toString());
+        } else {
+            throw new IllegalArgumentException("current object is not a map " + v.peek());
+        }
         return this;
     }
 

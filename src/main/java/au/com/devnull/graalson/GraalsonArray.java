@@ -1,5 +1,6 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import java.util.AbstractList;
 import java.util.List;
 import javax.json.JsonArray;
@@ -9,13 +10,12 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import org.graalvm.polyglot.Value;
-import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray {
+public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray, GraalsonValue {
 
     Value value = null;
 
@@ -97,6 +97,11 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray 
     @Override
     public boolean isNull(int index) {
         return value.getArrayElement(index).isNull();
+    }
+
+    @Override
+    public Value getGraalsonValue() {
+        return this.value;
     }
 
 }

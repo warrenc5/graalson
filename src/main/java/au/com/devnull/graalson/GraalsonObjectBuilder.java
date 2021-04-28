@@ -13,6 +13,7 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
+import static javax.json.JsonValue.ValueType.ARRAY;
 import org.graalvm.polyglot.Value;
 
 /**
@@ -29,7 +30,18 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
 
     @Override
     public JsonObjectBuilder add(String name, JsonValue value) {
-        this.value.putMember(name, value);
+        switch (value.getValueType()) {
+            case ARRAY:
+                break;
+            case OBJECT:
+                break;
+            case NULL:
+            case FALSE:
+            case TRUE:
+            case NUMBER:
+            case STRING:
+                this.value.putMember(name, value);
+        }
         return this;
     }
 

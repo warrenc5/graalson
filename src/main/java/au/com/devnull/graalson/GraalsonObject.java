@@ -1,5 +1,6 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import java.util.HashMap;
 import java.util.Set;
 import javax.json.JsonArray;
@@ -8,7 +9,6 @@ import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import org.graalvm.polyglot.Value;
-import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 
 /**
  *
@@ -21,8 +21,28 @@ public class GraalsonObject extends HashMap<String, JsonValue> implements JsonOb
     public GraalsonObject(Value value) {
         this.value = value;
         Set<String> keys = value.getMemberKeys();
+        //for (Value k = null; keys.hasIteratorNextElement(); k = keys.getIteratorNextElement()) {
         for (String k : keys) {
-            this.put(k, toJsonValue(value.getMember(k)));
+            Object member = value.getMember(k);
+
+            JsonValue jValue = null;
+
+            //if ("address".equals(k)) {
+            if (member instanceof Value) {
+                if (((Value) member).isHostObject()) {
+                    member = ((Value) member).asHostObject();
+                }
+            }
+            if (member instanceof JsonValue) {
+                jValue = (JsonValue) member;
+            } else if (member instanceof GraalsonValue) {
+                member = ((GraalsonValue) member).getGraalsonValue();
+                jValue = (JsonValue) member;
+            } else {
+                jValue = toJsonValue((Value) member);
+            }
+            this.put(k, jValue);
+
         }
     }
 

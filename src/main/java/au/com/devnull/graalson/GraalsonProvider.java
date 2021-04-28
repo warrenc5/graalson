@@ -48,11 +48,9 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     public static JsonProvider provider() {
 
         if (instance == null) {
-            polyglotContext = Context.newBuilder("js").allowPolyglotAccess(PolyglotAccess.ALL).allowHostAccess(HostAccess.ALL).build();
-            return instance = new GraalsonProvider();
-        } else {
-            return instance;
+            instance = new GraalsonProvider();
         }
+        return instance;
     }
 
     @Override
@@ -143,7 +141,8 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         } else if (o.isBoolean()) {
             return new GraalsonBoolean(o);
         }
-        throw new IllegalArgumentException(o.toString());
+
+        throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
     }
 
     public static <T extends JsonValue> T toJsonValue(Value o, Class<T> jClass) {
@@ -157,7 +156,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         } else if (jClass.equals(JsonString.class)) {
             return (T) new GraalsonString(o);
         }
-        throw new IllegalArgumentException(o.toString());
+        throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
     }
 
     public static List toJava(JsonArray value) {
@@ -214,10 +213,15 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     public static Context getPolyglotContext() {
+        if (polyglotContext != null) {
+            return polyglotContext;
+        }
+
         return polyglotContext = Context.newBuilder("js")
                 .allowPolyglotAccess(PolyglotAccess.ALL)
                 .allowExperimentalOptions(true)
                 .allowAllAccess(true)
+                .option("js.experimental-foreign-object-prototype", "true")
                 .allowHostAccess(HostAccess.ALL).build();
     }
 

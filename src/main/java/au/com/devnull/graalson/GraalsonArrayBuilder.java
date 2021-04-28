@@ -24,7 +24,18 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
 
     @Override
     public JsonArrayBuilder add(JsonValue value) {
-        this.value.setArrayElement(this.value.getArraySize(), value);
+        switch (value.getValueType()) {
+            case ARRAY:
+                break;
+            case OBJECT:
+                break;
+            case NULL:
+            case FALSE:
+            case TRUE:
+            case NUMBER:
+            case STRING:
+                this.value.setArrayElement(this.value.getArraySize(), value);
+        }
         return this;
     }
 
