@@ -22,7 +22,7 @@ public class GraalsonReader implements JsonReader {
 
     public GraalsonReader(Reader reader) {
 
-        this.value = GraalsonProvider.getPolyglotContext().eval("js", new Scanner(reader).useDelimiter("\\Z").next());
+        this.value = GraalsonProvider.getPolyglotContext().eval("js", "value= " + new Scanner(reader).useDelimiter("\\Z").next());
     }
 
     @Override
