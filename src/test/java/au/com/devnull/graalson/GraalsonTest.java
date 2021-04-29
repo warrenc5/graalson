@@ -1,5 +1,5 @@
+package au.com.devnull.graalson;
 
-import au.com.devnull.graalson.JsonObjectBindings;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
