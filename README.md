@@ -15,6 +15,22 @@ Common pattern to access JSON capabilities directly on graal vm.
         JsonWriter jwriter = Json.createWriter(writer);
         jwriter.write(jsonObject);
 
+Load from json resource
+
+        {
+             "firstName": "John", "lastName": "Smith", "age": 25,
+             "address" : {
+                 "streetAddress": "21 2nd Street",
+                 "city": "New York",
+                 "state": "NY",
+                 "postalCode": "10021"
+             },
+             "phoneNumber": [
+                 { "type": "home", "number": "212 555-1234" },
+                 { "type": "fax", "number": "646 555-4567" }
+             ]
+        }
+  
 Or build from objects
 
          JsonBuilderFactory factory = Json.createBuilderFactory(config);
