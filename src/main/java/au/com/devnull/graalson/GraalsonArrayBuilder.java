@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import org.graalvm.polyglot.Value;
@@ -89,13 +90,15 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
 
     @Override
     public JsonArrayBuilder add(JsonObjectBuilder builder) {
-        this.value.setArrayElement(this.value.getArraySize(), builder.build());
+        JsonObject value = builder.build();
+        this.value.setArrayElement(this.value.getArraySize(), value);
         return this;
     }
 
     @Override
     public JsonArrayBuilder add(JsonArrayBuilder builder) {
-        this.value.setArrayElement(this.value.getArraySize(), builder.build());
+        JsonArray value = builder.build();
+        this.value.setArrayElement(this.value.getArraySize(), value);
         return this;
     }
 

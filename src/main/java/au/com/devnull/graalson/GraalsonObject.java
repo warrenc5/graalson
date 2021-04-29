@@ -27,7 +27,6 @@ public class GraalsonObject extends HashMap<String, JsonValue> implements JsonOb
 
             JsonValue jValue = null;
 
-            //if ("address".equals(k)) {
             if (member instanceof Value) {
                 if (((Value) member).isHostObject()) {
                     member = ((Value) member).asHostObject();
