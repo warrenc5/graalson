@@ -217,11 +217,12 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
             return polyglotContext;
         }
 
+        //TODO graalvm version specific context initialization
         return polyglotContext = Context.newBuilder("js")
                 .allowPolyglotAccess(PolyglotAccess.ALL)
                 .allowExperimentalOptions(true)
                 .allowAllAccess(true)
-                .option("js.experimental-foreign-object-prototype", "true")
+                //.option("js.experimental-foreign-object-prototype", "true")
                 .allowHostAccess(HostAccess.ALL).build();
     }
 

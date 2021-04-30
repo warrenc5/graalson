@@ -80,4 +80,11 @@ public class GraalsonNumber implements JsonNumber, GraalsonValue {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return ivalue.toPlainString();
+    }
+
+
+
 }
