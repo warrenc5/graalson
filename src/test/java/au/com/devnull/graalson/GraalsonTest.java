@@ -48,10 +48,13 @@ public class GraalsonTest {
         Reader scriptReader = Files.newBufferedReader(Paths.get(test.toURI()));
         JsonReader reader = Json.createReader(scriptReader);
         JsonObject jsonObject = reader.readObject();
-        javax.script.Bindings result = (Bindings) new JsonObjectBindings(jsonObject);
         Writer writer = new OutputStreamWriter(System.out);
         JsonWriter jwriter = Json.createWriter(writer);
         jwriter.write(jsonObject);
+
+        javax.script.Bindings result = JsonObjectBindings.from(jsonObject);
+        System.out.println("");
+        System.out.println("bindings --->" + result.toString()+"<---");
 
     }
 
@@ -60,7 +63,7 @@ public class GraalsonTest {
         Map config = null;
         JsonBuilderFactory factory = Json.createBuilderFactory(config);
 
-        JsonObject value = factory.createObjectBuilder()
+        JsonObject jsonObject = factory.createObjectBuilder()
                 .add("firstName", "John")
                 .add("lastName", "Smith")
                 .add("age", 25)
@@ -77,9 +80,15 @@ public class GraalsonTest {
                                 .add("type", "fax")
                                 .add("number", "646 555-4567")))
                 .build();
+
         Writer writer = new OutputStreamWriter(System.out);
         JsonWriter jwriter = Json.createWriter(writer);
-        jwriter.write(value);
+        jwriter.write(jsonObject);
+
+
+        javax.script.Bindings result = JsonObjectBindings.from(jsonObject);
+        System.out.println("");
+        System.out.println("bindings --->" + result.toString()+"<---");
 
     }
 
