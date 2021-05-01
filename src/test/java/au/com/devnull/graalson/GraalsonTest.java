@@ -31,10 +31,11 @@ public class GraalsonTest {
     public void testBuilder() {
 
         Map<String, Object> config = new HashMap<>();
-        //config.put("replacer", "a=>a");
+        //FIXME
+        //config.put("replacer", null);
         config.put("spaces", Integer.valueOf(4));
         JsonProvider provider = JsonProvider.provider();
-        JsonBuilderFactory factory = Json.createBuilderFactory(config);
+        JsonBuilderFactory factory = provider.createBuilderFactory(config);
         JsonArrayBuilder aBuilder = factory.createArrayBuilder();
         aBuilder.add("hello");
         aBuilder.add("world");

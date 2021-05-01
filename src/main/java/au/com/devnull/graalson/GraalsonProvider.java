@@ -289,7 +289,6 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
         getPolyglotContext().getBindings("js").putMember("mine", context);
         String script = MessageFormat.format("result = JSON.stringify(mine,{0},{1})", (Object[]) buildConfig());
-        System.out.println(script);
         getPolyglotContext().eval("js", script);
         Value result = getPolyglotContext().getBindings("js").getMember("result");
         return result.toString();
