@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonBuilderFactory;
@@ -128,6 +129,22 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     @Override
+    public JsonReader createReader(InputStream in, Charset charset) {
+        return this.createReader(in);
+
+    }
+
+    @Override
+    public Map<String, ?> getConfigInUse() {
+        return config;
+    }
+
+    @Override
+    public JsonWriter createWriter(OutputStream out, Charset charset) {
+        return this.createWriter(out);
+    }
+
+    @Override
     public JsonWriter createWriter(Writer writer) {
         return new GraalsonGenerator(writer);
     }
@@ -165,25 +182,24 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return this;
     }
 
-    static Value toValue(JsonValue value) {
-        return ((GraalsonObject) value).getGraalsonValue();
-    }
-
     static Value valueFor(Class<? extends Object> clazz) {
         if (Map.class.isAssignableFrom(clazz)) {
             //Map<Object, Object> map = getPolyglotContext().eval("js", "{}").as(Map.class);
             //assert ((Map<Object, Object>) getPolyglotContext().eval("js", "[{}]").as(Object.class)).get(0) instanceof Map;
-            //FIXME assert fails, map is null
+            //FIXME: assert fails, map is null
             //return Value.asValue(ProxyObject.fromMap(new HashMap())); //
-            return getPolyglotContext().getBindings("js").getMember("Object").execute();
-        } else if (List.class.isAssignableFrom(clazz)) {
+            return getPolyglotContext()
+                    .getBindings("js").getMember("Object").execute();
+        } else if (List.class
+                .isAssignableFrom(clazz)) {
             List<Object> list = getPolyglotContext().eval("js", "[]").as(List.class);
+
             return Value.asValue(list);
         }
         throw new IllegalArgumentException(clazz.getCanonicalName());
     }
 
-    static JsonValue toJsonValue(Value o) {
+    static GraalsonValue toJsonValue(Value o) {
         if (o.hasArrayElements()) {
             return new GraalsonArray(o);
         } else if (o.hasMembers()) {
@@ -194,6 +210,35 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
             return new GraalsonString(o);
         } else if (o.isBoolean()) {
             return new GraalsonBoolean(o);
+        }
+
+        throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
+    }
+
+    static Value toValue(JsonValue value) {
+        //FIXME: widen
+        if (value instanceof GraalsonObject) {
+            return ((GraalsonObject) value).getGraalsonValue();
+        }
+
+        throw new IllegalArgumentException(value.getValueType().toString());
+    }
+
+    static Value toValue(Object o) {
+        /**
+         * if (o instanceof Value) { return toJsonValue((Value)
+         * o).getGraalsonValue(); } else
+         */
+        if (o instanceof Map) {
+            return new GraalsonObject((Map) o).getGraalsonValue();
+        } else if (o instanceof List) {
+            return new GraalsonArray((List) o).getGraalsonValue();
+        } else if (o instanceof String) {
+            return new GraalsonString((String) o).getGraalsonValue();
+        } else if (o instanceof Number) {
+            return new GraalsonNumber((Number) o).getGraalsonValue();
+        } else if (o instanceof Boolean) {
+            return new GraalsonBoolean((Boolean) o).getGraalsonValue();
         }
 
         throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
@@ -250,21 +295,37 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         throw new IllegalArgumentException(value.toString());
     }
 
-    @Override
-    public JsonReader createReader(InputStream in, Charset charset) {
-        return this.createReader(in);
-
+    static void copyInto(Map<String, Object> o, Value value) {
+        o.entrySet().forEach(e -> value.putMember(e.getKey(), toValue(e.getValue())));
     }
 
-    @Override
-    public Map<String, ?> getConfigInUse() {
-        //TODO allow for pretty print config
-        return this.config;
+    static void copyInto(List o, Value value) {
+        o.forEach(e -> value.setArrayElement(value.getArraySize(), toValue(e)));
     }
 
-    @Override
-    public JsonWriter createWriter(OutputStream out, Charset charset) {
-        return this.createWriter(out);
+    static void copyInto(Value o, Map value) {
+        Set<String> keys = o.getMemberKeys();
+        //for (Value k = null; keys.hasIteratorNextElement(); k = keys.getIteratorNextElement()) {
+        for (String k : keys) {
+            Object member = o.getMember(k);
+
+            JsonValue jValue = null;
+
+            if (member instanceof Value) {
+                if (((Value) member).isHostObject()) {
+                    member = ((Value) member).asHostObject();
+                }
+            }
+            if (member instanceof JsonValue) {
+                jValue = (JsonValue) member;
+            } else if (member instanceof GraalsonValue) {
+                member = ((GraalsonValue) member).getGraalsonValue();
+                jValue = (JsonValue) member;
+            } else {
+                jValue = toJsonValue((Value) member);
+            }
+            value.put(k, jValue);
+        }
     }
 
     static Context getPolyglotContext() {
@@ -285,8 +346,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return GraalsonProvider.getPolyglotContext().eval("js", "value= " + value);
     }
 
-    static String stringify(Value context) {
-
+    static String jsonStringify(Value context) {
         getPolyglotContext().getBindings("js").putMember("mine", context);
         String script = MessageFormat.format("result = JSON.stringify(mine,{0},{1})", (Object[]) buildConfig());
         getPolyglotContext().eval("js", script);
@@ -294,4 +354,9 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return result.toString();
     }
 
+    static String jsonStringify(Set<Entry<String, Object>> entrySet) {
+        Value map = valueFor(Map.class);
+        entrySet.forEach(e -> map.putMember(e.getKey(), toValue(e.getValue())));
+        return GraalsonProvider.jsonStringify(map);
+    }
 }

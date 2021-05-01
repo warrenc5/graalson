@@ -1,9 +1,9 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.toJava;
 import java.util.HashMap;
 import javax.json.JsonObject;
 import javax.script.SimpleBindings;
-import static au.com.devnull.graalson.GraalsonProvider.toJava;
 
 /**
  *
@@ -16,7 +16,7 @@ public class JsonObjectBindings extends SimpleBindings {
         super.putAll(toJava(jsonObject));
     }
 
-    public static SimpleBindings from(JsonObject jsonObject ) {
+    public static JsonObjectBindings from(JsonObject jsonObject) {
         return new JsonObjectBindings(jsonObject);
     }
 
@@ -25,6 +25,7 @@ public class JsonObjectBindings extends SimpleBindings {
         return super.entrySet().toString();
     }
 
-
-
+    public String stringify() {
+        return GraalsonProvider.jsonStringify(super.entrySet());
+    }
 }

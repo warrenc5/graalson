@@ -1,6 +1,7 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
+import static au.com.devnull.graalson.GraalsonProvider.copyInto;
+import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.util.AbstractList;
 import java.util.List;
 import javax.json.JsonArray;
@@ -10,6 +11,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.JsonValue.ValueType;
 import org.graalvm.polyglot.Value;
+import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 
 /**
  *
@@ -19,9 +21,13 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray,
 
     Value value = null;
 
+    public GraalsonArray(List o) {
+        this(valueFor(List.class));
+        copyInto(o, value);
+    }
+
     public GraalsonArray(Value value) {
         this.value = value;
-
     }
 
     @Override
@@ -103,5 +109,4 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray,
     public Value getGraalsonValue() {
         return this.value;
     }
-
 }

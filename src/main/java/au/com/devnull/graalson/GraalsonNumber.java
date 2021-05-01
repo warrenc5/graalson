@@ -16,13 +16,16 @@ import org.graalvm.polyglot.Value;
  */
 public class GraalsonNumber implements JsonNumber, GraalsonValue {
 
-    BigDecimal ivalue;
-    Value value;
+    private final BigDecimal ivalue;
+    private final Value value;
 
-    public GraalsonNumber(Value value) {
+    public GraalsonNumber(Number o) {
+        this(Value.asValue(o));
+    }
 
-        this.value = value;
-        this.ivalue = BigDecimal.valueOf(value.asInt());
+    public GraalsonNumber(Value o) {
+        this.value = o;
+        this.ivalue = BigDecimal.valueOf(value.asFloat());
     }
 
     @Override
@@ -84,7 +87,5 @@ public class GraalsonNumber implements JsonNumber, GraalsonValue {
     public String toString() {
         return ivalue.toPlainString();
     }
-
-
 
 }

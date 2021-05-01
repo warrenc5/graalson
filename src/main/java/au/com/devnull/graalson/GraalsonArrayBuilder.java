@@ -92,16 +92,17 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
 
     @Override
     public JsonArrayBuilder add(JsonObjectBuilder builder) {
-        GraalsonObject value = (GraalsonObject) builder.build();
-
-        this.value.setArrayElement(this.value.getArraySize(), value.getGraalsonValue());
+        //TODO: evaluate build later?
+        GraalsonObject o = (GraalsonObject) builder.build();
+        this.value.setArrayElement(this.value.getArraySize(), o.getGraalsonValue());
         return this;
     }
 
     @Override
     public JsonArrayBuilder add(JsonArrayBuilder builder) {
-        GraalsonArray value = (GraalsonArray) builder.build();
-        this.value.setArrayElement(this.value.getArraySize(), value.getGraalsonValue());
+        //TODO: evaluate build later?
+        GraalsonArray o = (GraalsonArray) builder.build();
+        this.value.setArrayElement(this.value.getArraySize(), o.getGraalsonValue());
         return this;
     }
 

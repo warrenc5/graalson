@@ -39,8 +39,8 @@ public class GraalsonTest {
         JsonArrayBuilder aBuilder = factory.createArrayBuilder();
         aBuilder.add("hello");
         aBuilder.add("world");
+        aBuilder.add(factory.createObjectBuilder().add("name", "earth"));
         JsonArray jsonObject = aBuilder.build();
-
         System.out.println(jsonObject.toString());
         Writer writer = new OutputStreamWriter(System.out);
         JsonWriterFactory wfactory = Json.createWriterFactory(config);
@@ -92,9 +92,10 @@ public class GraalsonTest {
         JsonWriter jwriter = Json.createWriter(writer);
         jwriter.write(jsonObject);
 
-        javax.script.Bindings result = JsonObjectBindings.from(jsonObject);
+        JsonObjectBindings result = JsonObjectBindings.from(jsonObject);
         System.out.println("");
         System.out.println("bindings --->" + result.toString() + "<---");
+        System.out.println("bindings json --->" + result.stringify() + "<---");
 
     }
 

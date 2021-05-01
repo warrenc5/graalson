@@ -1,13 +1,12 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.stringify;
 import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -16,6 +15,7 @@ import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.stream.JsonGenerator;
 import org.graalvm.polyglot.Value;
+import static au.com.devnull.graalson.GraalsonProvider.jsonStringify;
 
 /**
  *
@@ -34,24 +34,24 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public JsonGenerator writeStartObject() {
-        v.push(valueFor(HashMap.class));
+        v.push(valueFor(Map.class));
         return this;
     }
 
     @Override
     public JsonGenerator writeStartObject(String name) {
-        return add(name, HashMap.class);
+        return add(name, Map.class);
     }
 
     @Override
     public JsonGenerator writeStartArray() {
-        v.push(valueFor(ArrayList.class));
+        v.push(valueFor(List.class));
         return this;
     }
 
     @Override
     public JsonGenerator writeStartArray(String name) {
-        return add(name, ArrayList.class);
+        return add(name, List.class);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public void flush() {
-        String result = stringify(context);
+        String result = jsonStringify(context);
         try {
             writer.append(result);
             writer.flush();
@@ -192,7 +192,7 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     private JsonGenerator add(Object value) {
         if (v.peek().hasArrayElements()) {
-            v.peek().setArrayElement(v.peek().getArraySize(), value.toString());
+            v.peek().setArrayElement(v.peek().getArraySize(), value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
         } else {
             throw new IllegalArgumentException("current object is not a map " + v.peek());
         }

@@ -1,6 +1,5 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.toValue;
 import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -11,6 +10,7 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import static javax.json.JsonValue.ValueType.ARRAY;
 import org.graalvm.polyglot.Value;
+import static au.com.devnull.graalson.GraalsonProvider.toValue;
 
 /**
  *
@@ -93,18 +93,21 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
 
     @Override
     public JsonObjectBuilder add(String name, JsonObjectBuilder builder) {
+        //TODO: evaluate build later?
         this.value.putMember(name, builder.build());
         return this;
     }
 
     @Override
     public JsonObjectBuilder add(String name, JsonArrayBuilder builder) {
+        //TODO: evaluate build later?
         this.value.putMember(name, builder.build());
         return this;
     }
 
     @Override
     public JsonObject build() {
-        return new GraalsonObject(value);
+        GraalsonObject o = new GraalsonObject(value);
+        return o;
     }
 }

@@ -10,6 +10,10 @@ public class GraalsonBoolean implements GraalsonValue {
 
     private final Value value;
 
+    public GraalsonBoolean(Boolean o) {
+        this(Value.asValue(o));
+    }
+
     public GraalsonBoolean(Value o) {
         this.value = o;
     }

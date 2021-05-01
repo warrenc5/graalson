@@ -11,6 +11,10 @@ public class GraalsonString implements JsonString, GraalsonValue {
 
     private final Value value;
 
+    public GraalsonString(String value) {
+        this(Value.asValue(value));
+    }
+
     public GraalsonString(Value value) {
         this.value = value;
     }
@@ -39,7 +43,5 @@ public class GraalsonString implements JsonString, GraalsonValue {
     public String toString() {
         return value.asString();
     }
-
-
 
 }
