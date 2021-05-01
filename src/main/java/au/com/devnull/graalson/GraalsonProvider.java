@@ -7,8 +7,8 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,12 +45,26 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     private static JsonProvider instance = null;
 
+    private static Map<String, ? super Object> config = new HashMap<>();
+
     public static JsonProvider provider() {
 
         if (instance == null) {
             instance = new GraalsonProvider();
         }
         return instance;
+    }
+
+    private static String[] buildConfig() {
+        List<String> args = new ArrayList<>();
+        args.add(config.getOrDefault("replacer", "null").toString());
+        Object spaces = config.getOrDefault("spaces", "");
+        if (spaces instanceof Number) {
+            args.add(spaces.toString());
+        } else {
+            args.add("'" + spaces.toString() + "'");
+        }
+        return args.toArray(new String[args.size()]);
     }
 
     @Override
@@ -124,7 +138,10 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     @Override
-    public JsonWriterFactory createWriterFactory(Map<String, ?> config) {
+    public JsonWriterFactory createWriterFactory(Map<String, ? extends Object> newConfig) {
+        if (newConfig != null) {
+            config.putAll(newConfig);
+        }
         return this;
     }
 
@@ -241,7 +258,8 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     @Override
     public Map<String, ?> getConfigInUse() {
-        return Collections.EMPTY_MAP;
+        //TODO allow for pretty print config
+        return this.config;
     }
 
     @Override
@@ -270,7 +288,9 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     static String stringify(Value context) {
 
         getPolyglotContext().getBindings("js").putMember("mine", context);
-        getPolyglotContext().eval("js", "result = JSON.stringify(mine,2)");
+        String script = MessageFormat.format("result = JSON.stringify(mine,{0},{1})", (Object[]) buildConfig());
+        System.out.println(script);
+        getPolyglotContext().eval("js", script);
         Value result = getPolyglotContext().getBindings("js").getMember("result");
         return result.toString();
     }

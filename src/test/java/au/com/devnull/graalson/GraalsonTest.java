@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -16,8 +17,8 @@ import javax.json.JsonBuilderFactory;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
 import javax.json.spi.JsonProvider;
-import javax.script.Bindings;
 import org.junit.Test;
 
 /**
@@ -28,8 +29,12 @@ public class GraalsonTest {
 
     @Test
     public void testBuilder() {
+
+        Map<String, Object> config = new HashMap<>();
+        //config.put("replacer", "a=>a");
+        config.put("spaces", Integer.valueOf(4));
         JsonProvider provider = JsonProvider.provider();
-        JsonBuilderFactory factory = Json.createBuilderFactory(null);
+        JsonBuilderFactory factory = Json.createBuilderFactory(config);
         JsonArrayBuilder aBuilder = factory.createArrayBuilder();
         aBuilder.add("hello");
         aBuilder.add("world");
@@ -37,7 +42,8 @@ public class GraalsonTest {
 
         System.out.println(jsonObject.toString());
         Writer writer = new OutputStreamWriter(System.out);
-        JsonWriter jwriter = Json.createWriter(writer);
+        JsonWriterFactory wfactory = Json.createWriterFactory(config);
+        JsonWriter jwriter = wfactory.createWriter(writer);
         jwriter.write(jsonObject);
     }
 
@@ -54,7 +60,7 @@ public class GraalsonTest {
 
         javax.script.Bindings result = JsonObjectBindings.from(jsonObject);
         System.out.println("");
-        System.out.println("bindings --->" + result.toString()+"<---");
+        System.out.println("bindings --->" + result.toString() + "<---");
 
     }
 
@@ -85,10 +91,9 @@ public class GraalsonTest {
         JsonWriter jwriter = Json.createWriter(writer);
         jwriter.write(jsonObject);
 
-
         javax.script.Bindings result = JsonObjectBindings.from(jsonObject);
         System.out.println("");
-        System.out.println("bindings --->" + result.toString()+"<---");
+        System.out.println("bindings --->" + result.toString() + "<---");
 
     }
 
