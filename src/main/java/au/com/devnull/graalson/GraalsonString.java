@@ -35,4 +35,11 @@ public class GraalsonString implements JsonString, GraalsonValue {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return value.asString();
+    }
+
+
+
 }

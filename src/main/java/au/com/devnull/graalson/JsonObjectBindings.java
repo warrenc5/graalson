@@ -16,4 +16,15 @@ public class JsonObjectBindings extends SimpleBindings {
         super.putAll(toJava(jsonObject));
     }
 
+    public static SimpleBindings from(JsonObject jsonObject ) {
+        return new JsonObjectBindings(jsonObject);
+    }
+
+    @Override
+    public String toString() {
+        return super.entrySet().toString();
+    }
+
+
+
 }
