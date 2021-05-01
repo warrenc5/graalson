@@ -1,6 +1,7 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonGenerator.valueFor;
+import static au.com.devnull.graalson.GraalsonProvider.toValue;
+import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
@@ -26,8 +27,10 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
     public JsonArrayBuilder add(JsonValue value) {
         switch (value.getValueType()) {
             case ARRAY:
+                this.value.setArrayElement(this.value.getArraySize(), toValue(value));
                 break;
             case OBJECT:
+                this.value.setArrayElement(this.value.getArraySize(), toValue(value));
                 break;
             case NULL:
             case FALSE:

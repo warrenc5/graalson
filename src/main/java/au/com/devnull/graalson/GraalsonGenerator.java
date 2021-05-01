@@ -1,14 +1,13 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.getPolyglotContext;
+import static au.com.devnull.graalson.GraalsonProvider.stringify;
+import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -159,11 +158,9 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public void flush() {
-        getPolyglotContext().getBindings("js").putMember("mine", context);
-        getPolyglotContext().eval("js", "result = JSON.stringify(mine,2)");
-        Value result = getPolyglotContext().getBindings("js").getMember("result");
+        String result = stringify(context);
         try {
-            writer.append(result.toString());
+            writer.append(result);
             writer.flush();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -178,19 +175,6 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         return this;
     }
 
-    public static Value valueFor(Class<? extends Object> clazz) {
-        if (Map.class.isAssignableFrom(clazz)) {
-            //Map<Object, Object> map = getPolyglotContext().eval("js", "{}").as(Map.class);
-            //assert ((Map<Object, Object>) getPolyglotContext().eval("js", "[{}]").as(Object.class)).get(0) instanceof Map;
-            //FIXME assert fails, map is null
-            //return Value.asValue(ProxyObject.fromMap(new HashMap())); //
-            return getPolyglotContext().getBindings("js").getMember("Object").execute();
-        } else if (List.class.isAssignableFrom(clazz)) {
-            List<Object> list = getPolyglotContext().eval("js", "[]").as(List.class);
-            return Value.asValue(list);
-        }
-        throw new IllegalArgumentException(clazz.getCanonicalName());
-    }
 
     private JsonGenerator add(Class<? extends Object> clazz) {
         v.push(valueFor(clazz));
@@ -247,4 +231,5 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
                 break;
         }
     }
+
 }

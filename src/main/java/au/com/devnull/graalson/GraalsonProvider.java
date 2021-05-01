@@ -39,9 +39,9 @@ import org.graalvm.polyglot.Value;
  *
  * @author wozza
  */
-public class GraalsonProvider extends JsonProvider implements JsonReaderFactory, JsonWriterFactory, JsonBuilderFactory {
+public class GraalsonProvider extends JsonProvider implements JsonReaderFactory, JsonWriterFactory, JsonBuilderFactory, JsonGeneratorFactory, JsonParserFactory {
 
-    public static Context polyglotContext = null;
+    private static Context polyglotContext = null;
 
     private static JsonProvider instance = null;
 
@@ -55,18 +55,32 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     @Override
     public JsonParser createParser(Reader reader) {
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GraalsonParser(reader);
     }
 
     @Override
     public JsonParser createParser(InputStream in) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new GraalsonParser(new InputStreamReader(in));
     }
 
     @Override
     public JsonParserFactory createParserFactory(Map<String, ?> config) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this;
+    }
+
+    @Override
+    public JsonParser createParser(InputStream in, Charset charset) {
+        return new GraalsonParser(new InputStreamReader(in, charset));
+    }
+
+    @Override
+    public JsonParser createParser(JsonObject obj) {
+        return new GraalsonParser(obj);
+    }
+
+    @Override
+    public JsonParser createParser(JsonArray array) {
+        return new GraalsonParser(array);
     }
 
     @Override
@@ -80,8 +94,13 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     @Override
+    public JsonGenerator createGenerator(OutputStream out, Charset charset) {
+        return this.createGenerator(new OutputStreamWriter(out, charset));
+    }
+
+    @Override
     public JsonGeneratorFactory createGeneratorFactory(Map<String, ?> config) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return this;
     }
 
     @Override
@@ -129,7 +148,25 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return this;
     }
 
-    public static JsonValue toJsonValue(Value o) {
+    static Value toValue(JsonValue value) {
+        return ((GraalsonObject) value).getGraalsonValue();
+    }
+
+    static Value valueFor(Class<? extends Object> clazz) {
+        if (Map.class.isAssignableFrom(clazz)) {
+            //Map<Object, Object> map = getPolyglotContext().eval("js", "{}").as(Map.class);
+            //assert ((Map<Object, Object>) getPolyglotContext().eval("js", "[{}]").as(Object.class)).get(0) instanceof Map;
+            //FIXME assert fails, map is null
+            //return Value.asValue(ProxyObject.fromMap(new HashMap())); //
+            return getPolyglotContext().getBindings("js").getMember("Object").execute();
+        } else if (List.class.isAssignableFrom(clazz)) {
+            List<Object> list = getPolyglotContext().eval("js", "[]").as(List.class);
+            return Value.asValue(list);
+        }
+        throw new IllegalArgumentException(clazz.getCanonicalName());
+    }
+
+    static JsonValue toJsonValue(Value o) {
         if (o.hasArrayElements()) {
             return new GraalsonArray(o);
         } else if (o.hasMembers()) {
@@ -145,7 +182,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
     }
 
-    public static <T extends JsonValue> T toJsonValue(Value o, Class<T> jClass) {
+    static <T extends JsonValue> T toJsonValue(Value o, Class<T> jClass) {
 
         if (jClass.equals(JsonObject.class)) {
             return (T) new GraalsonObject(o);
@@ -159,7 +196,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
     }
 
-    public static List toJava(JsonArray value) {
+    static List toJava(JsonArray value) {
         List result = new ArrayList();
         for (int i = 0; i < value.size(); i++) {
             Object v = toJava(value.get(i));
@@ -168,7 +205,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return result;
     }
 
-    public static Map toJava(JsonObject value) {
+    static Map toJava(JsonObject value) {
         Map result = new HashMap();
         for (Entry<String, JsonValue> e : value.entrySet()) {
             Object v = toJava(e.getValue());
@@ -177,7 +214,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return result;
     }
 
-    public static Object toJava(JsonValue value) {
+    static Object toJava(JsonValue value) {
 
         switch (value.getValueType()) {
             case NUMBER:
@@ -212,7 +249,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return this.createWriter(out);
     }
 
-    public static Context getPolyglotContext() {
+    static Context getPolyglotContext() {
         if (polyglotContext != null) {
             return polyglotContext;
         }
@@ -223,6 +260,18 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
                 .allowAllAccess(true)
                 .option("js.experimental-foreign-object-prototype", "true")
                 .allowHostAccess(HostAccess.ALL).build();
+    }
+
+    static Value jsonParse(String value) {
+        return GraalsonProvider.getPolyglotContext().eval("js", "value= " + value);
+    }
+
+    static String stringify(Value context) {
+
+        getPolyglotContext().getBindings("js").putMember("mine", context);
+        getPolyglotContext().eval("js", "result = JSON.stringify(mine,2)");
+        Value result = getPolyglotContext().getBindings("js").getMember("result");
+        return result.toString();
     }
 
 }

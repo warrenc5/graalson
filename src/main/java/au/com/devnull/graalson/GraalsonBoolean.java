@@ -1,13 +1,12 @@
 package au.com.devnull.graalson;
 
-import javax.json.JsonValue;
 import org.graalvm.polyglot.Value;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonBoolean implements JsonValue, GraalsonValue {
+public class GraalsonBoolean implements GraalsonValue {
 
     private final Value value;
 

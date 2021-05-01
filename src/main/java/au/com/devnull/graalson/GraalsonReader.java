@@ -1,5 +1,6 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.jsonParse;
 import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
@@ -21,8 +22,7 @@ public class GraalsonReader implements JsonReader {
     InvocationHandler handler;
 
     public GraalsonReader(Reader reader) {
-
-        this.value = GraalsonProvider.getPolyglotContext().eval("js", "value= " + new Scanner(reader).useDelimiter("\\Z").next());
+        this.value = jsonParse(new Scanner(reader).useDelimiter("\\Z").next());
     }
 
     @Override

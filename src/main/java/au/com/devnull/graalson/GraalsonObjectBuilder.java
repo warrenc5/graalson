@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonGenerator.valueFor;
+import static au.com.devnull.graalson.GraalsonProvider.toValue;
+import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
@@ -32,8 +28,10 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
     public JsonObjectBuilder add(String name, JsonValue value) {
         switch (value.getValueType()) {
             case ARRAY:
+                this.value.putMember(name, toValue(value));
                 break;
             case OBJECT:
+                this.value.putMember(name, toValue(value));
                 break;
             case NULL:
             case FALSE:
@@ -109,5 +107,4 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
     public JsonObject build() {
         return new GraalsonObject(value);
     }
-
 }
