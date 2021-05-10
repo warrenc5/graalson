@@ -1,14 +1,25 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>biz.mofokom</groupId>
     <artifactId>graalson</artifactId>
     <packaging>jar</packaging>
-    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.0-SNAPSHOT</version>
-    <name>rvn4mvn</name>
+    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.1-SNAPSHOT</version>
+    <name>graalson</name>
     <url xmlns:mvn="http://maven.apache.org/POM/4.0.0">https://github.com/warrenc5/graalson</url>
+    <description>Javax.JSON EE bindings for graaljs</description>
+    <licenses>
+        <license>
+            <name>The GNU Lesser General Public License, Version 3.0</name>
+            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Warren Crossing</name>
+        </developer>
+    </developers>
     <build>
         <defaultGoal>install</defaultGoal>
         <plugins>
