@@ -4,7 +4,7 @@
     <groupId>biz.mofokom</groupId>
     <artifactId>graalson</artifactId>
     <packaging>jar</packaging>
-    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.0</version>
+    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.1-SNAPSHOT</version>
     <name>rvn4mvn</name>
     <url xmlns:mvn="http://maven.apache.org/POM/4.0.0">https://github.com/warrenc5/graalson</url>
     <build>
@@ -206,7 +206,7 @@
         <connection>scm:git:https://github.com/warrenc5/graalson.git</connection>
         <developerConnection>scm:git:https://github.com/warrenc5/graalson.git</developerConnection>
         <url>https://github.com/warrenc5/graalson</url>
-        <tag>graalson-1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
