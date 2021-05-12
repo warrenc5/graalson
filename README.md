@@ -55,7 +55,7 @@ Or build from objects
 Add dependency
             
         <dependency>
-            <groupId>au.com.devnull</groupId>
+            <groupId>biz.mofokom</groupId>
             <artifactId>graalson</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0.1</version>
         </dependency>
