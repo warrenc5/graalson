@@ -222,6 +222,9 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public void write(JsonStructure value) {
+        if(value instanceof GraalsonStructure){
+            value = ((GraalsonStructure)value).getValue();
+        }
         switch (value.getValueType()) {
             case ARRAY:
                 this.writeArray((JsonArray) value);
