@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -210,12 +211,14 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
             return new GraalsonString(o);
         } else if (o.isBoolean()) {
             return new GraalsonBoolean(o);
+        } else if(o.isNull()) {
+            return new GraalsonNull(JsonValue.NULL);
         }
 
         throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
     }
 
-    static Value toValue(JsonValue value) {
+    public static Value toValue(JsonValue value) {
         //FIXME: widen
         if (value instanceof GraalsonObject) {
             return ((GraalsonObject) value).getGraalsonValue();
@@ -231,6 +234,8 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
          */
         if (o instanceof Map) {
             return new GraalsonObject((Map) o).getGraalsonValue();
+        } else if (o instanceof Set) {
+            return new GraalsonArray((Set) o).getGraalsonValue();
         } else if (o instanceof List) {
             return new GraalsonArray((List) o).getGraalsonValue();
         } else if (o instanceof String) {
@@ -276,7 +281,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return result;
     }
 
-    static Object toJava(JsonValue value) {
+    public static Object toJava(JsonValue value) {
 
         switch (value.getValueType()) {
             case NUMBER:
@@ -297,6 +302,10 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     static void copyInto(Map<String, Object> o, Value value) {
         o.entrySet().forEach(e -> value.putMember(e.getKey(), toValue(e.getValue())));
+    }
+
+    static void copyInto(Set o, Value value) {
+        o.forEach(e -> value.setArrayElement(value.getArraySize(), toValue(e)));
     }
 
     static void copyInto(List o, Value value) {
@@ -328,7 +337,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         }
     }
 
-    static Context getPolyglotContext() {
+    public static Context getPolyglotContext() {
         if (polyglotContext != null) {
             return polyglotContext;
         }
@@ -355,6 +364,10 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     static String jsonStringify(Set<Entry<String, Object>> entrySet) {
+        return jsonStringify(entrySet, Collections.EMPTY_MAP);
+    }
+
+    static String jsonStringify(Set<Entry<String, Object>> entrySet, Map<String, Object> config) {
         Value map = valueFor(Map.class);
         entrySet.forEach(e -> map.putMember(e.getKey(), toValue(e.getValue())));
         return GraalsonProvider.jsonStringify(map);

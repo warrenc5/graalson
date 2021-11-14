@@ -24,7 +24,11 @@ public class GraalsonBoolean implements GraalsonValue {
 
     @Override
     public ValueType getValueType() {
-        return ValueType.FALSE;
+        if (this.value.asBoolean()) {
+            return ValueType.TRUE;
+        } else {
+            return ValueType.FALSE;
+        }
     }
 
     @Override

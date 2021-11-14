@@ -2,6 +2,7 @@ package au.com.devnull.graalson;
 
 import static au.com.devnull.graalson.GraalsonProvider.toJava;
 import java.util.HashMap;
+import java.util.Map;
 import javax.json.JsonObject;
 import javax.script.SimpleBindings;
 
@@ -10,6 +11,10 @@ import javax.script.SimpleBindings;
  * @author wozza
  */
 public class JsonObjectBindings extends SimpleBindings {
+
+    public JsonObjectBindings(Map<String, Object> bindings) {
+        super(bindings);
+    }
 
     public JsonObjectBindings(JsonObject jsonObject) {
         super(new HashMap<String, Object>());
