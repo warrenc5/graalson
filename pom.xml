@@ -222,8 +222,8 @@
     </distributionManagement>
      
     <scm>
-        <connection>scm:git:https://github.com/warrenc5/graalson.git</connection>
-        <developerConnection>scm:git:https://github.com/warrenc5/graalson.git</developerConnection>
+        <connection>scm:git:git@github.com:warrenc5/graalson.git</connection>
+        <developerConnection>scm:git:git@github.com:warrenc5/graalson.git</developerConnection>
         <url>https://github.com/warrenc5/graalson</url>
         <tag>HEAD</tag>
     </scm>
