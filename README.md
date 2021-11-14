@@ -57,5 +57,5 @@ Add dependency
         <dependency>
             <groupId>biz.mofokom</groupId>
             <artifactId>graalson</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
         </dependency>
