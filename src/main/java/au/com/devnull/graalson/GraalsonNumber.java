@@ -16,7 +16,7 @@ import org.graalvm.polyglot.Value;
  */
 public class GraalsonNumber implements JsonNumber, GraalsonValue {
 
-    private final BigDecimal ivalue;
+    private BigDecimal ivalue;
     private final Value value;
 
     public GraalsonNumber(Number o) {
@@ -25,7 +25,17 @@ public class GraalsonNumber implements JsonNumber, GraalsonValue {
 
     public GraalsonNumber(Value o) {
         this.value = o;
-        this.ivalue = BigDecimal.valueOf(value.asFloat());
+
+        if (!o.isNumber()) {
+            throw new IllegalArgumentException(o.asString());
+        }
+
+        try {
+            this.ivalue = BigDecimal.valueOf(value.asFloat());
+        } catch (NumberFormatException x) {
+            this.ivalue = BigDecimal.valueOf(-0f);
+            //if (value.is() && value.asString().equalsIgnoreCase("nan")) {
+        }
     }
 
     @Override
