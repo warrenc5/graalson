@@ -3,7 +3,7 @@ package au.com.devnull.graalson;
 import static au.com.devnull.graalson.GraalsonProvider.copyInto;
 import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import static au.com.devnull.graalson.GraalsonProvider.valueFor;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -16,7 +16,7 @@ import org.graalvm.polyglot.Value;
  *
  * @author wozza
  */
-public class GraalsonObject extends HashMap<String, JsonValue> implements JsonObject, GraalsonValue {
+public class GraalsonObject extends LinkedHashMap<String, JsonValue> implements JsonObject, GraalsonValue {
 
     public Value value = null;
 
