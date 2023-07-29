@@ -6,6 +6,8 @@ import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.util.AbstractList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import static java.util.stream.Collectors.toList;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
@@ -73,7 +75,7 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray,
 
     @Override
     public <T extends JsonValue> List<T> getValuesAs(Class<T> clazz) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return null;
     }
 
     @Override
@@ -114,5 +116,10 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray,
     @Override
     public Value getGraalsonValue() {
         return this.value;
+    }
+
+    //Extra implementation for json-path
+    public List<Object> getValuesAs(Function<JsonValue, Object> function) {
+        return this.stream().map(function).collect(toList());
     }
 }

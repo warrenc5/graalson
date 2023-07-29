@@ -4,6 +4,7 @@ import static au.com.devnull.graalson.GraalsonProvider.toValue;
 import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
 import java.util.List;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -21,6 +22,11 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
 
     public GraalsonArrayBuilder() {
         this.value = valueFor(List.class);
+    }
+
+    public GraalsonArrayBuilder(Collection<?> collection) {
+        super();
+        collection.forEach(o -> value.setArrayElement(this.value.getArraySize(), o));
     }
 
     @Override
@@ -109,6 +115,22 @@ public class GraalsonArrayBuilder implements JsonArrayBuilder {
     @Override
     public JsonArray build() {
         return new GraalsonArray(value);
+    }
+
+    //Extra implementation for json-path
+    public GraalsonArrayBuilder remove(int index) {
+        this.value.removeArrayElement(index);
+        return this;
+    }
+
+    public GraalsonArrayBuilder add(int index, JsonValue element) {
+        this.value.setArrayElement(index, element); //FIXME: implement insert
+        return this;
+    }
+
+    public GraalsonArrayBuilder set(int index, JsonValue element) {
+        this.value.setArrayElement(index, element);
+        return this;
     }
 
 }

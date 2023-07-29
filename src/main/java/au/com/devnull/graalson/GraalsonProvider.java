@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -200,6 +201,25 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         throw new IllegalArgumentException(clazz.getCanonicalName());
     }
 
+    static GraalsonValue toJsonValue(Object o) {
+        if (o instanceof List) {
+            return new GraalsonArray((List) o);
+            /*} else if (o.hasMembers()) {
+            return new GraalsonObject(o);
+        } else if (o instanceof sNumber()) {
+            return new GraalsonNumber(o);
+        } else if (o.isString()) {
+            return new GraalsonString(o);
+        } else if (o.isBoolean()) {
+            return new GraalsonBoolean(o);
+        } else if (o.isNull()) {
+            return new GraalsonNull(JsonValue.NULL);
+             */
+        }
+
+        throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));
+    }
+
     static GraalsonValue toJsonValue(Value o) {
         if (o.hasArrayElements()) {
             return new GraalsonArray(o);
@@ -222,6 +242,8 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         //FIXME: widen
         if (value instanceof GraalsonObject) {
             return ((GraalsonObject) value).getGraalsonValue();
+        } else if (value instanceof GraalsonArray) {
+            return ((GraalsonArray) value).getGraalsonValue();
         }
 
         throw new IllegalArgumentException(value.getValueType().toString());
@@ -371,5 +393,22 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         Value map = valueFor(Map.class);
         entrySet.forEach(e -> map.putMember(e.getKey(), toValue(e.getValue())));
         return GraalsonProvider.jsonStringify(map);
+    }
+
+    //Extra implementation for json-path
+    public JsonValue createValue(Object obj) {
+        return toJsonValue(obj);
+    }
+
+    public GraalsonArrayBuilder createArrayBuilder(Collection<?> collection) {
+        return new GraalsonArrayBuilder(collection);
+    }
+
+    public GraalsonObjectBuilder createObjectBuilder(Map<String, Object> map) {
+        return new GraalsonObjectBuilder(map);
+    }
+
+    public GraalsonObjectBuilder createObjectBuilder(JsonObject obj) {
+        return new GraalsonObjectBuilder(obj);
     }
 }

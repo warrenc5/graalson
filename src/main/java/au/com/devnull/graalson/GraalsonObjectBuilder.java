@@ -1,5 +1,6 @@
 package au.com.devnull.graalson;
 
+import static au.com.devnull.graalson.GraalsonProvider.toValue;
 import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,7 +11,6 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import static javax.json.JsonValue.ValueType.ARRAY;
 import org.graalvm.polyglot.Value;
-import static au.com.devnull.graalson.GraalsonProvider.toValue;
 
 /**
  *
@@ -22,6 +22,15 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
 
     public GraalsonObjectBuilder() {
         this.value = valueFor(Map.class);
+    }
+
+    GraalsonObjectBuilder(Map<String, Object> map) {
+        super();
+        map.forEach((k, v) -> value.putMember(k, v));
+    }
+
+    GraalsonObjectBuilder(JsonObject obj) {
+        this.value = toValue(obj);
     }
 
     @Override
@@ -109,5 +118,10 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
     public JsonObject build() {
         GraalsonObject o = new GraalsonObject(value);
         return o;
+    }
+
+    //Extra implementation for json-path
+    public GraalsonObjectBuilder remove(String toString) {
+        return this;
     }
 }
