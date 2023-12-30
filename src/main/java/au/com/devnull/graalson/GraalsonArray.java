@@ -7,13 +7,13 @@ import java.util.AbstractList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonValue.ValueType;
 import static java.util.stream.Collectors.toList;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonValue.ValueType;
 import org.graalvm.polyglot.Value;
 
 /**
@@ -119,7 +119,8 @@ public class GraalsonArray extends AbstractList<JsonValue> implements JsonArray,
     }
 
     //Extra implementation for json-path
-    public List<Object> getValuesAs(Function<JsonValue, Object> function) {
-        return this.stream().map(function).collect(toList());
+    @Override
+    public List getValuesAs(Function function) {
+        return (List) this.stream().map(function).collect(toList());
     }
 }

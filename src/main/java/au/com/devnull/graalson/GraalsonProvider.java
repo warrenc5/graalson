@@ -16,23 +16,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonReader;
-import javax.json.JsonReaderFactory;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.JsonWriterFactory;
-import javax.json.spi.JsonProvider;
-import javax.json.stream.JsonGenerator;
-import javax.json.stream.JsonGeneratorFactory;
-import javax.json.stream.JsonParser;
-import javax.json.stream.JsonParserFactory;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonBuilderFactory;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonReaderFactory;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+import jakarta.json.JsonWriter;
+import jakarta.json.JsonWriterFactory;
+import jakarta.json.spi.JsonProvider;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonGeneratorFactory;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParserFactory;
 import org.graalvm.polyglot.Context;
 import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.PolyglotAccess;
@@ -148,7 +148,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     @Override
     public JsonWriter createWriter(Writer writer) {
-        return new GraalsonGenerator(writer);
+        return new GraalsonWriter(writer);
     }
 
     @Override
@@ -404,7 +404,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return new GraalsonArrayBuilder(collection);
     }
 
-    public GraalsonObjectBuilder createObjectBuilder(Map<String, Object> map) {
+    public GraalsonObjectBuilder createObjectBuilder(Map map) {
         return new GraalsonObjectBuilder(map);
     }
 

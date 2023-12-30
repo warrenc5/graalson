@@ -5,10 +5,10 @@ import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
 import java.io.Reader;
 import java.lang.reflect.InvocationHandler;
 import java.util.Scanner;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonStructure;
 import org.graalvm.polyglot.Value;
 
 /**

@@ -5,11 +5,11 @@ import static au.com.devnull.graalson.GraalsonProvider.valueFor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import static javax.json.JsonValue.ValueType.ARRAY;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+import static jakarta.json.JsonValue.ValueType.ARRAY;
 import org.graalvm.polyglot.Value;
 
 /**

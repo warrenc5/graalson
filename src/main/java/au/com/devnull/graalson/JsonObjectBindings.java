@@ -3,7 +3,7 @@ package au.com.devnull.graalson;
 import static au.com.devnull.graalson.GraalsonProvider.toJava;
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.JsonObject;
+import jakarta.json.JsonObject;
 import javax.script.SimpleBindings;
 
 /**

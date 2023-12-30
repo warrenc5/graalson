@@ -2,9 +2,9 @@ package au.com.devnull.graalson;
 
 import java.io.Reader;
 import java.math.BigDecimal;
-import javax.json.JsonStructure;
-import javax.json.stream.JsonLocation;
-import javax.json.stream.JsonParser;
+import jakarta.json.JsonStructure;
+import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParser;
 
 /**
  *

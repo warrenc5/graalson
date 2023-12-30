@@ -7,28 +7,24 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.stream.JsonGenerator;
-import org.graalvm.polyglot.Value;
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonGenerator;
 import static au.com.devnull.graalson.GraalsonProvider.jsonStringify;
+import java.util.Stack;
+import org.graalvm.polyglot.Value;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonGenerator implements JsonGenerator, JsonWriter {
+public class GraalsonGenerator implements JsonGenerator {
 
-    Stack<Value> v = new java.util.Stack<>();
+    protected final Writer writer;
+    private Stack<Value> v = new java.util.Stack<>();
 
-    Value context = null;
-    private final Writer writer;
+    private Value context = null;
 
-    public GraalsonGenerator(Writer writer) {
+    protected GraalsonGenerator(Writer writer) {
         this.writer = writer;
     }
 
@@ -40,7 +36,8 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public JsonGenerator writeStartObject(String name) {
-        return add(name, Map.class);
+        add(name, Map.class);
+        return this;
     }
 
     @Override
@@ -51,52 +48,62 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public JsonGenerator writeStartArray(String name) {
-        return add(name, List.class);
+        add(name, List.class);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, JsonValue value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, String value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, BigInteger value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, BigDecimal value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, int value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, long value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, double value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String name, boolean value) {
-        return add(name, value);
+        add(name, value);
+        return this;
     }
 
     @Override
     public JsonGenerator writeNull(String name) {
-        return add(name);
+        add(name);
+        return this;
     }
 
     @Override
@@ -107,47 +114,62 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
 
     @Override
     public JsonGenerator write(JsonValue value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(String value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(BigDecimal value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(BigInteger value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(int value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(long value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(double value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator write(boolean value) {
-        return add(value);
+        add(value);
+        return this;
     }
 
     @Override
     public JsonGenerator writeNull() {
-        return add(Void.class);
+        add(Void.class);
+        return this;
+    }
+
+    @Override
+    public JsonGenerator writeKey(String key) {
+        addKey(key);
+        return this;
     }
 
     @Override
@@ -168,71 +190,35 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         v.clear();
     }
 
-    private GraalsonGenerator add(String name, Class clazz) {
+    private void addKey(String name) {
+        v.peek().putMember(name, null);
+    }
+
+    protected void add(String name, Class clazz) {
         Value k = valueFor(clazz);
         v.peek().putMember(name, k);
         v.push(k);
-        return this;
     }
 
-
-    private JsonGenerator add(Class<? extends Object> clazz) {
+    protected void add(Class<? extends Object> clazz) {
         v.push(valueFor(clazz));
-        return this;
     }
 
-    private JsonGenerator add(String name, Object value) {
+    protected void add(String name, Object value) {
         if (v.peek().hasMembers()) {
             v.peek().putMember(name, value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
         } else {
             throw new IllegalArgumentException("current object is not a map " + v.peek());
         }
-        return this;
     }
 
-    private JsonGenerator add(Object value) {
+    protected void add(Object value) {
         if (v.peek().hasArrayElements()) {
             v.peek().setArrayElement(v.peek().getArraySize(), value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
         } else {
             throw new IllegalArgumentException("current object is not a map " + v.peek());
         }
-        return this;
     }
 
-    @Override
-    public void writeArray(JsonArray array) {
-        this.writeStartArray();
-        for (int i = 0; i < array.size(); i++) {
-            this.write(array.get(i));
-        }
-        this.writeEnd();
-        this.flush();
-    }
-
-    @Override
-    public void writeObject(JsonObject object) {
-
-        this.writeStartObject();
-        object.entrySet().forEach(e -> {
-            this.write(e.getKey(), e.getValue());
-        });
-        this.writeEnd();
-        this.flush();
-    }
-
-    @Override
-    public void write(JsonStructure value) {
-        if(value instanceof GraalsonStructure){
-            value = ((GraalsonStructure)value).getValue();
-        }
-        switch (value.getValueType()) {
-            case ARRAY:
-                this.writeArray((JsonArray) value);
-                break;
-            case OBJECT:
-                this.writeObject((JsonObject) value);
-                break;
-        }
-    }
 
 }

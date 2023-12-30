@@ -7,7 +7,7 @@ package au.com.devnull.graalson;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.json.JsonNumber;
+import jakarta.json.JsonNumber;
 import org.graalvm.polyglot.Value;
 
 /**

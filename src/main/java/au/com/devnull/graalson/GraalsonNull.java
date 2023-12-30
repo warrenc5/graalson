@@ -1,6 +1,6 @@
 package au.com.devnull.graalson;
 
-import javax.json.JsonValue;
+import jakarta.json.JsonValue;
 import org.graalvm.polyglot.Value;
 
 /**
