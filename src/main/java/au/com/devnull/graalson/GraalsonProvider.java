@@ -231,7 +231,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
             return new GraalsonString(o);
         } else if (o.isBoolean()) {
             return new GraalsonBoolean(o);
-        } else if(o.isNull()) {
+        } else if (o.isNull()) {
             return new GraalsonNull(JsonValue.NULL);
         }
 
@@ -304,6 +304,9 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     public static Object toJava(JsonValue value) {
+        if (value == null) {
+            return null;
+        }
 
         switch (value.getValueType()) {
             case NUMBER:
@@ -314,12 +317,13 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
                 return toJava((JsonObject) value);
             case ARRAY:
                 return toJava((JsonArray) value);
+            case TRUE:
             case FALSE:
                 return ((GraalsonBoolean) value).getBoolean();
             case NULL:
                 return null;
         }
-        throw new IllegalArgumentException(value.toString());
+        throw new IllegalArgumentException(value.getValueType().toString() + " " + value.toString());
     }
 
     static void copyInto(Map<String, Object> o, Value value) {
