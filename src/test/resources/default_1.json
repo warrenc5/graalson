@@ -1,0 +1,16 @@
+{
+    "firstName": "John",
+    "lastName": "Smith",
+    "address": {
+        "streetAddress": "169 Dead End Circuit",
+        "city": "Nevernever Land",
+        "state": "FI",
+        "postalCode": "1000"
+    },
+    "phoneNumber": [
+        {
+            "type": "mobile",
+            "number": "+61406863323"
+        }
+    ]
+}

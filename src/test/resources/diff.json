@@ -1,0 +1,26 @@
+[
+    {
+        "op": "add",
+        "path": "/phoneNumber/2",
+        "value": {
+            "type": "mobile",
+            "number": "+61406863323"
+        }
+    },
+    {
+        "op": "remove",
+        "path": "/age"
+    },
+    {
+        "op": "replace",
+        "path": "/address",
+        "value": {
+            "address": {
+                "streetAddress": "169 Dead End Circuit",
+                "city": "Nevernever Land",
+                "state": "FI",
+                "postalCode": "1000"
+            }
+        }
+    }
+]

@@ -1,15 +1,21 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.toValue;
-import static au.com.devnull.graalson.GraalsonProvider.valueFor;
+import static au.com.devnull.graalson.GraalsonValue.toValue;
+import static au.com.devnull.graalson.GraalsonStructure.valueFor;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+import static jakarta.json.JsonValue.ValueType.ARRAY;
+import static jakarta.json.JsonValue.ValueType.FALSE;
+import static jakarta.json.JsonValue.ValueType.NULL;
+import static jakarta.json.JsonValue.ValueType.NUMBER;
+import static jakarta.json.JsonValue.ValueType.OBJECT;
+import static jakarta.json.JsonValue.ValueType.STRING;
+import static jakarta.json.JsonValue.ValueType.TRUE;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
-import static javax.json.JsonValue.ValueType.ARRAY;
 import org.graalvm.polyglot.Value;
 
 /**
@@ -24,8 +30,8 @@ public class GraalsonObjectBuilder implements JsonObjectBuilder {
         this.value = valueFor(Map.class);
     }
 
-    GraalsonObjectBuilder(Map<String, Object> map) {
-        super();
+    GraalsonObjectBuilder(Map<String, ?> map) {
+        this();
         map.forEach((k, v) -> value.putMember(k, v));
     }
 

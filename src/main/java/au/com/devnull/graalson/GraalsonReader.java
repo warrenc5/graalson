@@ -1,14 +1,13 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.jsonParse;
-import static au.com.devnull.graalson.GraalsonProvider.toJsonValue;
+import static au.com.devnull.graalson.GraalsonValue.jsonParse;
+import static au.com.devnull.graalson.GraalsonValue.toJsonValue;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonStructure;
 import java.io.Reader;
-import java.lang.reflect.InvocationHandler;
 import java.util.Scanner;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
 import org.graalvm.polyglot.Value;
 
 /**
@@ -18,8 +17,6 @@ import org.graalvm.polyglot.Value;
 public class GraalsonReader implements JsonReader {
 
     private final Value value;
-
-    InvocationHandler handler;
 
     public GraalsonReader(Reader reader) {
         this.value = jsonParse(new Scanner(reader).useDelimiter("\\Z").next());

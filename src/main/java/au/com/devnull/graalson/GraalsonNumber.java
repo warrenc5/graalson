@@ -5,25 +5,32 @@
  */
 package au.com.devnull.graalson;
 
+import jakarta.json.JsonNumber;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import javax.json.JsonNumber;
 import org.graalvm.polyglot.Value;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonNumber implements JsonNumber, GraalsonValue {
+public final class GraalsonNumber extends GraalsonValue implements JsonNumber {
+
+    static void from(JsonNumber v) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     private BigDecimal ivalue;
-    private final Value value;
 
-    public GraalsonNumber(Number o) {
+    GraalsonNumber(int i) {
+        this(Value.asValue(i));
+    }
+
+    GraalsonNumber(Number o) {
         this(Value.asValue(o));
     }
 
-    public GraalsonNumber(Value o) {
+    GraalsonNumber(Value o) {
         this.value = o;
 
         if (!o.isNumber()) {

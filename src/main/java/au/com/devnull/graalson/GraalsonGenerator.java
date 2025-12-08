@@ -1,6 +1,7 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.valueFor;
+import static au.com.devnull.graalson.GraalsonStructure.valueFor;
+import static au.com.devnull.graalson.GraalsonValue.jsonStringify;
 import java.io.IOException;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -8,29 +9,65 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonStructure;
-import javax.json.JsonValue;
-import javax.json.JsonWriter;
-import javax.json.stream.JsonGenerator;
 import org.graalvm.polyglot.Value;
-import static au.com.devnull.graalson.GraalsonProvider.jsonStringify;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonStructure;
+import jakarta.json.JsonValue;
+import static jakarta.json.JsonValue.ValueType.ARRAY;
+import static jakarta.json.JsonValue.ValueType.OBJECT;
+import jakarta.json.JsonWriter;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonGenerator implements JsonGenerator, JsonWriter {
+public class GraalsonGenerator implements JsonGenerator {
+
+    final GraalsonWriter gwriter;
+
+    GraalsonGenerator(Writer writer) {
+        this.gwriter = new GraalsonWriter(writer);
+    }
+
+    public class GraalsonWriter implements JsonWriter {
+
+        private final Writer writer;
+
+        public GraalsonWriter(Writer writer) {
+            this.writer = writer;
+        }
+
+        @Override
+        public void writeArray(JsonArray ja) {
+            GraalsonGenerator.this.writeArray(ja);
+        }
+
+        @Override
+        public void writeObject(JsonObject jo) {
+            GraalsonGenerator.this.writeObject(jo);
+        }
+
+        @Override
+        public void write(JsonStructure js) {
+            GraalsonGenerator.this.write(js);
+        }
+
+        @Override
+        public void write(JsonValue v) {
+            GraalsonGenerator.this.write(v);
+        }
+
+        @Override
+        public void close() {
+            GraalsonGenerator.this.close();
+        }
+    }
 
     Stack<Value> v = new java.util.Stack<>();
 
     Value context = null;
-    private final Writer writer;
-
-    public GraalsonGenerator(Writer writer) {
-        this.writer = writer;
-    }
 
     @Override
     public JsonGenerator writeStartObject() {
@@ -160,8 +197,8 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
     public void flush() {
         String result = jsonStringify(context);
         try {
-            writer.append(result);
-            writer.flush();
+            gwriter.writer.append(result);
+            gwriter.writer.flush();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -174,7 +211,6 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         v.push(k);
         return this;
     }
-
 
     private JsonGenerator add(Class<? extends Object> clazz) {
         v.push(valueFor(clazz));
@@ -199,7 +235,6 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         return this;
     }
 
-    @Override
     public void writeArray(JsonArray array) {
         this.writeStartArray();
         for (int i = 0; i < array.size(); i++) {
@@ -209,7 +244,6 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         this.flush();
     }
 
-    @Override
     public void writeObject(JsonObject object) {
 
         this.writeStartObject();
@@ -220,10 +254,9 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
         this.flush();
     }
 
-    @Override
     public void write(JsonStructure value) {
-        if(value instanceof GraalsonStructure){
-            value = ((GraalsonStructure)value).getValue();
+        if (value instanceof GraalsonStructure) {
+            value = ((GraalsonStructure) value).getValue();
         }
         switch (value.getValueType()) {
             case ARRAY:
@@ -233,6 +266,13 @@ public class GraalsonGenerator implements JsonGenerator, JsonWriter {
                 this.writeObject((JsonObject) value);
                 break;
         }
+    }
+
+    @Override //Java EE 8.0
+    public JsonGenerator writeKey(String string) {
+        //TODO:
+        this.write("key:" + string);
+        return this;
     }
 
 }

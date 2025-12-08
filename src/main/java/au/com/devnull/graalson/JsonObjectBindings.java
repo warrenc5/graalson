@@ -1,9 +1,10 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.toJava;
+import static au.com.devnull.graalson.GraalsonStructure.toJava;
+import static au.com.devnull.graalson.GraalsonValue.jsonStringify;
+import jakarta.json.JsonObject;
 import java.util.HashMap;
 import java.util.Map;
-import javax.json.JsonObject;
 import javax.script.SimpleBindings;
 
 /**
@@ -31,6 +32,6 @@ public class JsonObjectBindings extends SimpleBindings {
     }
 
     public String stringify() {
-        return GraalsonProvider.jsonStringify(super.entrySet());
+        return jsonStringify(super.entrySet());
     }
 }

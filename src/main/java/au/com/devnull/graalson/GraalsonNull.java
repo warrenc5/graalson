@@ -1,15 +1,14 @@
 package au.com.devnull.graalson;
 
-import javax.json.JsonValue;
 import org.graalvm.polyglot.Value;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonNull implements GraalsonValue {
+public final class GraalsonNull extends GraalsonValue {
 
-    public GraalsonNull(JsonValue NULL) {
+    public GraalsonNull() {
     }
 
     @Override
@@ -21,5 +20,4 @@ public class GraalsonNull implements GraalsonValue {
     public ValueType getValueType() {
         return ValueType.NULL;
     }
-
 }

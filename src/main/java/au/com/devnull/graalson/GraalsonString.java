@@ -1,15 +1,13 @@
 package au.com.devnull.graalson;
 
-import javax.json.JsonString;
+import jakarta.json.JsonString;
 import org.graalvm.polyglot.Value;
 
 /**
  *
  * @author wozza
  */
-public class GraalsonString implements JsonString, GraalsonValue {
-
-    private final Value value;
+public final class GraalsonString extends GraalsonValue implements JsonString {
 
     public GraalsonString(String value) {
         this(Value.asValue(value));

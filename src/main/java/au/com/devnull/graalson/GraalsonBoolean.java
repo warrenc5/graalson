@@ -6,9 +6,7 @@ import org.graalvm.polyglot.Value;
  *
  * @author wozza
  */
-public class GraalsonBoolean implements GraalsonValue {
-
-    private final Value value;
+public final class GraalsonBoolean extends GraalsonValue {
 
     public GraalsonBoolean(Boolean o) {
         this(Value.asValue(o));

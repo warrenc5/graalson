@@ -1,15 +1,22 @@
 package au.com.devnull.graalson;
 
-import static au.com.devnull.graalson.GraalsonProvider.toValue;
-import static au.com.devnull.graalson.GraalsonProvider.valueFor;
+import static au.com.devnull.graalson.GraalsonValue.toValue;
+import static au.com.devnull.graalson.GraalsonStructure.valueFor;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonValue;
+import static jakarta.json.JsonValue.ValueType.ARRAY;
+import static jakarta.json.JsonValue.ValueType.FALSE;
+import static jakarta.json.JsonValue.ValueType.NULL;
+import static jakarta.json.JsonValue.ValueType.NUMBER;
+import static jakarta.json.JsonValue.ValueType.OBJECT;
+import static jakarta.json.JsonValue.ValueType.STRING;
+import static jakarta.json.JsonValue.ValueType.TRUE;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonValue;
 import org.graalvm.polyglot.Value;
 
 /**
