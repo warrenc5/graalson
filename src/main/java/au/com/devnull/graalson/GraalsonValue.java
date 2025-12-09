@@ -9,9 +9,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -101,17 +99,12 @@ public abstract sealed class GraalsonValue implements JsonValue permits
     public static GraalsonValue toJsonValue(Object o) {
         if (o instanceof List) {
             return new GraalsonArray((List) o);
-            /*} else if (o.hasMembers()) {
-            return new GraalsonObject(o);
-        } else if (o instanceof sNumber()) {
-            return new GraalsonNumber(o);
-        } else if (o.isString()) {
-            return new GraalsonString(o);
-        } else if (o.isBoolean()) {
-            return new GraalsonBoolean(o);
-        } else if (o.isNull()) {
-            return new GraalsonNull(JsonValue.NULL);
-             */
+        } else if (o instanceof Value v) {
+            if (v.hasArrayElements()) {
+                return new GraalsonArray(v);
+            } else if (v.hasMembers()) {
+                return new GraalsonObject(v);
+            }
         }
 
         throw new IllegalArgumentException(o == null ? "null" : (o.getClass() + " " + o.toString()));

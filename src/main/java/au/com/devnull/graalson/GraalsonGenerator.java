@@ -190,19 +190,23 @@ public class GraalsonGenerator implements JsonGenerator {
     @Override
     public void close() {
         flush();
-        v.clear();
     }
 
     @Override
     public void flush() {
+        if (context == null) {
+            return;
+        }
         String result = jsonStringify(context);
         try {
             gwriter.writer.append(result);
             gwriter.writer.flush();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
+        } finally {
+            v.clear();
+            context = null;
         }
-        v.clear();
     }
 
     private GraalsonGenerator add(String name, Class clazz) {
@@ -227,6 +231,9 @@ public class GraalsonGenerator implements JsonGenerator {
     }
 
     private JsonGenerator add(Object value) {
+        /*if (v.isEmpty()) {
+            v.add(value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
+        } else */
         if (v.peek().hasArrayElements()) {
             v.peek().setArrayElement(v.peek().getArraySize(), value instanceof GraalsonValue ? ((GraalsonValue) value).getGraalsonValue() : Value.asValue(value));
         } else {

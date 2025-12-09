@@ -6,6 +6,7 @@ import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonStructure;
+import java.io.IOException;
 import java.io.Reader;
 import java.util.Scanner;
 import org.graalvm.polyglot.Value;
@@ -16,15 +17,31 @@ import org.graalvm.polyglot.Value;
  */
 public class GraalsonReader implements JsonReader {
 
-    private final Value value;
+    private Value value;
+    private final Reader reader;
 
-    public GraalsonReader(Reader reader) {
-        this.value = jsonParse(new Scanner(reader).useDelimiter("\\Z").next());
+    public GraalsonReader(final Reader reader) {
+        this.reader = reader;
+    }
+
+    private JsonStructure toJsonStructure(Value value) {
+        if (value.hasMembers()) {
+            return (JsonStructure) toJsonValue(value);
+        } else if (value.hasArrayElements()) {
+            return (JsonStructure) toJsonValue(value);
+        } else {
+            throw new IllegalArgumentException("Value is not a JSON object or array. " + value);
+        }
     }
 
     @Override
     public JsonStructure read() {
-        return (JsonStructure) toJsonValue(value);
+        try (this.reader) {
+            this.value = jsonParse(new Scanner(reader).useDelimiter("\\Z").next());
+        } catch (IOException x) {
+            throw new RuntimeException(x);
+        }
+        return toJsonStructure(value);
     }
 
     @Override
@@ -39,6 +56,10 @@ public class GraalsonReader implements JsonReader {
 
     @Override
     public void close() {
+        try {
+            reader.close();
+        } catch (IOException ex) {
+            //never?
+        }
     }
-
 }
