@@ -54,20 +54,22 @@ Or build from objects
              
 Add dependency
             
+```
         <dependency>
-            <groupId>biz.mofokom</groupId>
+            <groupId>mobi.mofokom</groupId>
             <artifactId>graalson</artifactId>
-            <version>1.0.3</version>
+            <version>1.0.5</version>
         </dependency>
+```
 
 Library is used by Graalson-trax transformer 
 
 https://www.github.com/warrenc5/graalson-trax
 
+```
         <dependency>
-            <groupId>biz.mofokom</groupId>
+            <groupId>mobi.mofokom</groupId>
             <artifactId>graalson-trax</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
-
-
+```
