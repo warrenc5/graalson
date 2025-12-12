@@ -34,8 +34,6 @@ import java.util.Collections;
  */
 public final class GraalsonArray extends GraalsonStructure implements JsonArray {
 
-    Value value = null;
-
     public GraalsonArray(Set o) {
         this(valueFor(ARRAY_CLASS));
         this.addAll(o);

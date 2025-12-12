@@ -187,9 +187,12 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return this;
     }
 
-    /*** 
-    *   Equivalent to System.setProperty("javax.xml.transform.TransformerFactory", "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
-    */
+    /**
+     * *
+     * Equivalent to
+     * System.setProperty("javax.xml.transform.TransformerFactory",
+     * "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
+     */
     public static void useJavaxXmlTransformTransformerFactory() {
         System.setProperty("javax.xml.transform.TransformerFactory", "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
     }
@@ -235,7 +238,11 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
     }
 
     public JsonMergePatch createMergeDiff(JsonValue source, JsonValue target) {
-        return new GraalsonMergePatch();
+        if (!(source instanceof JsonObject) || !(target instanceof JsonObject)) {
+            throw new IllegalArgumentException("Only JsonObject supported for merge-diff");
+        }
+        JsonStructure mergePatch = GraalsonMergePatch.createDiff((JsonObject) source, (JsonObject) target);
+        return new GraalsonMergePatch(mergePatch);
     }
 
     public JsonPatchBuilder createPatchBuilder(JsonValue source, JsonValue target) {
@@ -274,7 +281,7 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
 
     @Override
     public JsonMergePatch createMergePatch(JsonValue patch) {
-        return super.createMergePatch(patch);
+        return new GraalsonMergePatch(patch);
     }
 
     @Override

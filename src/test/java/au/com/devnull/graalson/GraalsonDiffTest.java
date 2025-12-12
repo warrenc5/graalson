@@ -1,13 +1,10 @@
 package au.com.devnull.graalson;
 
-import au.com.devnull.graalson.GraalsonPatch.Step;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonPatch;
-import jakarta.json.JsonValue;
 import jakarta.json.JsonWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

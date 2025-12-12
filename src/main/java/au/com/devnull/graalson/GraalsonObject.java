@@ -34,8 +34,6 @@ import java.util.stream.Collectors;
 @SuppressWarnings("unchecked")
 public final class GraalsonObject extends GraalsonStructure implements JsonObject {
 
-    public Value value = null;
-
     public GraalsonObject(Map<String, JsonValue> o) {
         value = valueFor(OBJECT_CLASS);
         putAll(o);

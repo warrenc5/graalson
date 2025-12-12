@@ -1,13 +1,20 @@
 package au.com.devnull.graalson;
 
+import jakarta.json.Json;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonReader;
 import jakarta.json.JsonWriter;
 import java.io.StringWriter;
+import java.util.Scanner;
+import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 public class GraalsonWriterTest {
 
@@ -71,4 +78,18 @@ public class GraalsonWriterTest {
         Assertions.assertTrue(result.contains("\"bar\""));
     }
 
+    @Test
+    public void testToString() throws JSONException {
+        JsonReader reader = Json.createReader(ClassLoader.getSystemResourceAsStream("default.json"));
+        String expected = new Scanner(ClassLoader.getSystemResourceAsStream("default.json")).useDelimiter("\\Z").next();
+
+        JsonObject actual = reader.readObject();
+
+        assertNotNull(actual);
+        assertNotNull(actual.toString());
+
+        System.out.println(actual);
+
+        JSONAssert.assertEquals(expected, actual.toString(), JSONCompareMode.STRICT_ORDER);
+    }
 }

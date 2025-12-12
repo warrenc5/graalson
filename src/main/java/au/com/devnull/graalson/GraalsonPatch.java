@@ -8,9 +8,6 @@ import jakarta.json.JsonPatch;
 import jakarta.json.JsonString;
 import jakarta.json.JsonStructure;
 import jakarta.json.JsonValue;
-import static jakarta.json.JsonValue.FALSE;
-import static jakarta.json.JsonValue.NULL;
-import static jakarta.json.JsonValue.TRUE;
 import static jakarta.json.JsonValue.ValueType.ARRAY;
 import static jakarta.json.JsonValue.ValueType.NUMBER;
 import static jakarta.json.JsonValue.ValueType.OBJECT;
@@ -19,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import static java.util.stream.Collectors.toList;
-import org.graalvm.polyglot.Value;
 
 public class GraalsonPatch implements JsonPatch {
 
@@ -79,6 +75,10 @@ public class GraalsonPatch implements JsonPatch {
 
     public JsonArray toJsonArray() {
         return new GraalsonArray(steps.stream().map(Step::toJsonObject).collect(toList()));
+    }
+
+    public String toString() {
+        return toJsonArray().toString();
     }
 
     static class Step {
