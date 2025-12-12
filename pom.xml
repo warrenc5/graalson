@@ -11,7 +11,7 @@
     <groupId>mobi.mofokom</groupId>
     <artifactId>graalson</artifactId>
     <packaging>jar</packaging>
-    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.5</version>
+    <version xmlns:mvn="http://maven.apache.org/POM/4.0.0">1.0.6-SNAPSHOT</version>
     <name>graalson</name>
     <url xmlns:mvn="http://maven.apache.org/POM/4.0.0">https://github.com/warrenc5/graalson</url>
     <description>Javax.JSON EE bindings for graaljs</description>
@@ -108,7 +108,7 @@
         <connection>scm:git:git@github.com:warrenc5/graalson.git</connection>
         <developerConnection>scm:git:git@github.com:warrenc5/graalson.git</developerConnection>
         <url>https://github.com/warrenc5/graalson</url>
-        <tag>graalson-1.0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <properties>
