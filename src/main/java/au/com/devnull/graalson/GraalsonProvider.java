@@ -187,6 +187,9 @@ public class GraalsonProvider extends JsonProvider implements JsonReaderFactory,
         return this;
     }
 
+    /*** 
+    *   Equivalent to System.setProperty("javax.xml.transform.TransformerFactory", "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
+    */
     public static void useJavaxXmlTransformTransformerFactory() {
         System.setProperty("javax.xml.transform.TransformerFactory", "au.com.devnull.graalson.trax.GraalsonTransformerFactory");
     }

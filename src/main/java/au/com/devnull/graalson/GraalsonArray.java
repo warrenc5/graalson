@@ -3,7 +3,6 @@ package au.com.devnull.graalson;
 import static au.com.devnull.graalson.GraalsonValue.toJsonValue;
 import static au.com.devnull.graalson.GraalsonStructure.valueFor;
 import static au.com.devnull.graalson.GraalsonStructure.ARRAY_CLASS;
-import static au.com.devnull.graalson.GraalsonStructure.copyInto;
 import jakarta.json.JsonArray;
 import jakarta.json.JsonNumber;
 import jakarta.json.JsonObject;

@@ -36,10 +36,4 @@ public final class GraalsonString extends GraalsonValue implements JsonString {
     public Value getGraalsonValue() {
         return value;
     }
-
-    @Override
-    public String toString() {
-        return value.asString();
-    }
-
 }

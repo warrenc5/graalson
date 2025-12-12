@@ -32,6 +32,14 @@ public abstract sealed class GraalsonStructure extends GraalsonValue implements 
         return this;
     }
 
+    @Override
+    public String toString() {
+        if (value == null) {
+            return null;
+        }
+        return jsonStringify(value);
+    }
+
     abstract <T extends JsonStructure> T execute(GraalsonPatch.Step step);
 
     abstract GraalsonStructure deepClone();

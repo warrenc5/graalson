@@ -34,6 +34,13 @@ public abstract sealed class GraalsonValue implements JsonValue permits
 
     abstract Value getGraalsonValue();
 
+    public String toString() {
+        if (value == null) {
+            return null;
+        }
+        return value.toString();
+    }
+
     public static GraalsonValue from(JsonValue value) {
 
         if (value instanceof GraalsonValue g) {
