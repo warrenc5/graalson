@@ -26,6 +26,7 @@ import org.graalvm.polyglot.Value;
 import java.util.NoSuchElementException;
 import java.util.ArrayList;
 import java.lang.reflect.Array;
+import java.util.Collections;
 
 /**
  *
@@ -84,9 +85,24 @@ public final class GraalsonArray extends GraalsonStructure implements JsonArray 
         return toJsonValue(value.getArrayElement(index), JsonString.class);
     }
 
-    @Override
     public <T extends JsonValue> List<T> getValuesAs(Class<T> clazz) {
-        return null;
+        if (clazz == null) {
+            throw new NullPointerException("clazz must not be null");
+        }
+        int sz = size();
+        if (sz == 0) {
+            return Collections.emptyList();
+        }
+        List<T> result = new ArrayList<>(sz);
+        for (int i = 0; i < sz; i++) {
+            JsonValue val = get(i);
+            if (clazz.isInstance(val)) {
+                result.add(clazz.cast(val));
+            } else {
+                throw new ClassCastException("Element at index " + i + " cannot be cast to " + clazz.getName());
+            }
+        }
+        return result;
     }
 
     @Override
@@ -129,11 +145,6 @@ public final class GraalsonArray extends GraalsonStructure implements JsonArray 
         return this.value;
     }
 
-    //Extra implementation for json-path - now implemented as default in JEE 8.0
-    /**
-     * public List<Object> getValuesAs(Function<JsonValue, Object> function) {
-     * return this.stream().map(function).collect(toList()); }
-     */
     public GraalsonArray deepClone() {
         return new GraalsonArray(GraalsonValue.deepClonePolyglotValue(this.value));
     }
