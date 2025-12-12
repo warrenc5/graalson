@@ -5,7 +5,7 @@
     <parent>
         <groupId>mobi.mofokom</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </parent>
     
     <groupId>mobi.mofokom</groupId>
@@ -36,15 +36,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.central</groupId>
-                <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.9.0</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <publishingServerId>central</publishingServerId>
                 </configuration>
             </plugin>
         </plugins>
