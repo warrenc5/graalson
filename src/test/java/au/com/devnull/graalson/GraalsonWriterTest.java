@@ -8,6 +8,8 @@ import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Scanner;
 import org.json.JSONException;
 import org.junit.jupiter.api.Assertions;
@@ -92,4 +94,17 @@ public class GraalsonWriterTest {
 
         JSONAssert.assertEquals(expected, actual.toString(), JSONCompareMode.STRICT_ORDER);
     }
+
+    @Test
+    public void testWriterConfig() throws JSONException {
+        JsonReader reader = Json.createReader(ClassLoader.getSystemResourceAsStream("default.json"));
+
+        JsonObject actual = reader.readObject();
+        GraalsonProvider provider = (GraalsonProvider) GraalsonProvider.provider();
+        Map config = provider.getConfigInUse();
+        config.put("spaces", 4);
+        System.out.println(Arrays.asList(provider.buildConfig()));
+        System.out.println(actual);
+    }
+
 }

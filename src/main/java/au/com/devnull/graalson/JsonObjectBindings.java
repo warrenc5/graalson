@@ -3,7 +3,7 @@ package au.com.devnull.graalson;
 import static au.com.devnull.graalson.GraalsonStructure.toJava;
 import static au.com.devnull.graalson.GraalsonValue.jsonStringify;
 import jakarta.json.JsonObject;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.script.SimpleBindings;
 
@@ -18,7 +18,7 @@ public class JsonObjectBindings extends SimpleBindings {
     }
 
     public JsonObjectBindings(JsonObject jsonObject) {
-        super(new HashMap<String, Object>());
+        super(new LinkedHashMap<String, Object>());
         super.putAll(toJava(jsonObject));
     }
 

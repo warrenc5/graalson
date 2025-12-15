@@ -9,6 +9,7 @@ import jakarta.json.JsonValue;
 import jakarta.json.JsonValue.ValueType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -106,7 +107,7 @@ public abstract sealed class GraalsonStructure extends GraalsonValue implements 
     }
 
     static Map toJava(JsonObject value) {
-        Map result = new HashMap();
+        Map result = new LinkedHashMap();
         for (Entry<String, JsonValue> e : value.entrySet()) {
             Object v = toJava(e.getValue());
             result.put(e.getKey(), v);
