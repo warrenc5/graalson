@@ -202,6 +202,7 @@ public abstract sealed class GraalsonValue implements JsonValue permits
                 return GraalsonStructure.toJava((JsonObject) value);
             case ARRAY:
                 return GraalsonStructure.toJava((JsonArray) value);
+            case TRUE:
             case FALSE:
                 return ((GraalsonBoolean) value).getBoolean();
             case NULL:
